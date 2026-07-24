@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const port = window.location.port;
       const apiBase = (host === 'localhost' || host === '127.0.0.1') && port !== '3000'
         ? 'http://localhost:3000'
-        : '';
+        : '__RENDER_BACKEND_URL__';
 
       // Call backend API endpoint
       const response = await fetch(`${apiBase}/api/audit`, {
