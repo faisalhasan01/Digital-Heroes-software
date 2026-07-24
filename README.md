@@ -8,20 +8,19 @@ Built for the **Digital Heroes Training Task** (linked to [digitalheroesco.com](
 
 ## 📂 Project Structure
 
-The project has been separated into two independent folders for frontend and backend:
+The project is structured with frontend files at the root level (making Vercel static deployment zero-config) and backend files organized in a subfolder:
 
 ```text
-├── frontend/
-│   ├── index.html   # Main layout structure & forms
-│   ├── style.css    # Dark glassmorphic styling & keyframe animations
-│   └── app.js       # Client request handler & dynamic metric DOM mappings
-├── backend/
+├── index.html       # Frontend structure
+├── style.css        # Frontend styling & animations
+├── app.js           # Frontend client logic & metric rendering
+├── backend/         # Backend Node/Express project
 │   ├── src/
-│   │   ├── parser.js       # SEO extraction rules & fetch timeouts
-│   │   ├── parser.test.js  # Jest unit tests for parsing logic
-│   │   └── server.js       # Express router hosting /api/audit and serving frontend
-│   ├── package.json        # Dependencies & test runners
-│   └── .gitignore          # Node dependency ignore list
+│   │   ├── parser.js       # SEO parsing engine
+│   │   ├── parser.test.js  # Jest unit tests
+│   │   └── server.js       # Express server hosting /api/audit
+│   ├── package.json        # Backend scripts & dependencies
+│   └── .gitignore          # Backend node_modules git ignore
 ├── README.md               # Setup & documentation (this file)
 └── .gitignore              # Root git configuration
 ```
@@ -44,12 +43,12 @@ The project has been separated into two independent folders for frontend and bac
    ```bash
    npm start
    ```
-   The backend server runs at [http://localhost:3000](http://localhost:3000) and will automatically serve the static files from the `frontend/` directory.
+   The backend server runs at [http://localhost:3000](http://localhost:3000) and will automatically serve the static files from the root directory.
 
 ### 2. Setup Frontend
 
-- **Option A (Served together - Recommended)**: Simply open [http://localhost:3000](http://localhost:3000) in your web browser. The backend server automatically routes and serves the static files inside the `frontend/` folder.
-- **Option B (Decoupled Dev Server)**: You can serve the files in `frontend/` using any static server (like VS Code's Live Server on port 5500). The frontend is built to dynamically detect if it's running locally outside the default port and redirect the API request automatically to `http://localhost:3000/api/audit`.
+- **Option A (Served together - Recommended)**: Simply open [http://localhost:3000](http://localhost:3000) in your web browser. The backend server automatically serves the root static files.
+- **Option B (Decoupled Dev Server)**: You can serve the root files using Vercel, Live Server (port 5500), or double-clicking `index.html`. The frontend is built to dynamically detect if it's running outside port 3000 and redirect requests to `http://localhost:3000/api/audit`.
 
 ### 3. Running Backend Tests
 

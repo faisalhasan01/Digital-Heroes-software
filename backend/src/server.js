@@ -12,8 +12,8 @@ app.use(cors());
 // Parse JSON body payloads
 app.use(express.json());
 
-// Serve static frontend assets from the frontend directory (located at root level)
-app.use(express.static(path.join(__dirname, '../../frontend')));
+// Serve static frontend assets from the root directory
+app.use(express.static(path.join(__dirname, '../../')));
 
 /**
  * POST /api/audit
@@ -48,7 +48,7 @@ app.post('/api/audit', async (req, res) => {
 
 // Serve frontend SPA index for any unrecognized paths
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../../index.html'));
 });
 
 // Start the server
