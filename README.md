@@ -6,35 +6,61 @@ Built for the **Digital Heroes Training Task** (linked to [digitalheroesco.com](
 
 ---
 
+## 📂 Project Structure
+
+The project has been separated into two independent folders for frontend and backend:
+
+```text
+├── frontend/
+│   ├── index.html   # Main layout structure & forms
+│   ├── style.css    # Dark glassmorphic styling & keyframe animations
+│   └── app.js       # Client request handler & dynamic metric DOM mappings
+├── backend/
+│   ├── src/
+│   │   ├── parser.js       # SEO extraction rules & fetch timeouts
+│   │   ├── parser.test.js  # Jest unit tests for parsing logic
+│   │   └── server.js       # Express router hosting /api/audit and serving frontend
+│   ├── package.json        # Dependencies & test runners
+│   └── .gitignore          # Node dependency ignore list
+├── README.md               # Setup & documentation (this file)
+└── .gitignore              # Root git configuration
+```
+
+---
+
 ## 🚀 Getting Started
 
-### Prerequisites
+### 1. Setup Backend
 
-- Node.js (version 18.0.0 or higher)
-- npm
-
-### Installation
-
-1. Clone or download the repository directory.
-2. Install the package dependencies:
+1. Navigate to the `backend/` folder:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
    ```bash
    npm install
    ```
+3. Run the Express server:
+   ```bash
+   npm start
+   ```
+   The backend server runs at [http://localhost:3000](http://localhost:3000) and will automatically serve the static files from the `frontend/` directory.
 
-### Running the Application
+### 2. Setup Frontend
 
-To launch the Express server locally:
-```bash
-npm start
-```
-By default, the server runs on [http://localhost:3000](http://localhost:3000). Open this address in your web browser.
+- **Option A (Served together - Recommended)**: Simply open [http://localhost:3000](http://localhost:3000) in your web browser. The backend server automatically routes and serves the static files inside the `frontend/` folder.
+- **Option B (Decoupled Dev Server)**: You can serve the files in `frontend/` using any static server (like VS Code's Live Server on port 5500). The frontend is built to dynamically detect if it's running locally outside the default port and redirect the API request automatically to `http://localhost:3000/api/audit`.
 
-### Running Tests
+### 3. Running Backend Tests
 
-To run the automated Jest unit test suite:
-```bash
-npm test
-```
+1. Open a terminal in the `backend/` folder:
+   ```bash
+   cd backend
+   ```
+2. Run Jest tests:
+   ```bash
+   npm test
+   ```
 
 ---
 
@@ -73,15 +99,6 @@ npm test
 }
 ```
 
-### Error Response Example (`400 Bad Request` or `500 Internal Server Error`)
-
-```json
-{
-  "success": false,
-  "error": "Host not found. Please check if the domain exists and you are connected to the internet."
-}
-```
-
 ---
 
 ## 🎨 Design Decisions
@@ -91,7 +108,7 @@ We chose **Cheerio** for extracting metadata and counting tags over alternatives
 - **Reasoning**: Cheerio parses markup and provides an API identical to jQuery without running a full browser engine or standard Javascript VM context. This makes execution times under 50ms, consumes minimal memory, and scales exceptionally well under multi-user loads. We trade client-side Javascript execution execution for server efficiency, which is the correct choice for an audit tool analyzing baseline HTML markup.
 
 ### 2. Separation of Network Retrieval and HTML Parsing (Pure Function Pattern)
-The core parser logic is divided into two distinct functions in [parser.js](src/parser.js): `auditUrl` (handles async HTTP fetching, header validation, and timeout rules) and `parseHtml` (takes raw HTML text, status, and response time, returning the structured metrics).
+The core parser logic is divided into two distinct functions in `parser.js`: `auditUrl` (handles async HTTP fetching, header validation, and timeout rules) and `parseHtml` (takes raw HTML text, status, and response time, returning the structured metrics).
 - **Reasoning**: This separation enables pure, fast unit testing. In `parser.test.js`, we can verify a multitude of HTML structure edges (happy paths, missing tags, space-only alts, empty files) without spinning up dummy HTTP servers or using heavy mock interceptors. It yields reliable, isolated tests that execute in seconds.
 
 ### 3. Progressive Warning UX & Design System
@@ -115,6 +132,3 @@ If we had more time to expand the application, we would focus on these critical 
 2. **Asynchronous Audit Job Queue (Redis + BullMQ)**
    - *Problem*: Synchronous HTTP audit routes block server event loops during long-lived requests or timeout scenarios.
    - *Solution*: Move from a request-response block to an async job processor. When a user audits a site, the server returns a Job ID immediately. The work is offloaded to background workers, and the frontend polls (or uses WebSockets/SSE) to render metrics once complete, shielding the backend from crash loops under heavy traffic.
-
-3. **Expanded SEO Verification Rules**
-   - We would implement deeper crawlers, such as verifying SSL certificates expiration dates, auditing CSS/JS bundle compression sizes, verifying mobile-responsiveness meta tags, and rendering an OpenGraph mockup card so the publisher sees exactly how their site appears when shared on social channels.

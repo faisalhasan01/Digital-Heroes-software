@@ -1,7 +1,7 @@
 {
-  "name": "page-pulse",
+  "name": "page-pulse-backend",
   "version": "1.0.0",
-  "description": "A lightweight web auditing tool built for Digital Heroes Training Task.",
+  "description": "Backend API for Page Pulse SEO auditor web tool.",
   "main": "src/server.js",
   "type": "commonjs",
   "scripts": {

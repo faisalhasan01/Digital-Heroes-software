@@ -12,8 +12,8 @@ app.use(cors());
 // Parse JSON body payloads
 app.use(express.json());
 
-// Serve static frontend assets from the public directory
-app.use(express.static(path.join(__dirname, '../public')));
+// Serve static frontend assets from the frontend directory (located at root level)
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 /**
  * POST /api/audit
@@ -30,13 +30,11 @@ app.post('/api/audit', async (req, res) => {
   }
 
   try {
-    // Perform audit with default 8000ms timeout
     const report = await auditUrl(url, 8000);
     return res.json(report);
   } catch (error) {
     console.error(`Audit failed for URL: ${url} - Error: ${error.message}`);
     
-    // Check error type or return standard 422/400 for user errors
     const isClientError = error.message.includes('Invalid URL') || 
                           error.message.includes('not return an HTML document') ||
                           error.message.includes('Host not found');
@@ -50,7 +48,7 @@ app.post('/api/audit', async (req, res) => {
 
 // Serve frontend SPA index for any unrecognized paths
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
 });
 
 // Start the server
@@ -61,4 +59,4 @@ app.listen(PORT, () => {
   console.log(`==================================================`);
 });
 
-module.exports = app; // Exported for integration testing if needed
+module.exports = app;

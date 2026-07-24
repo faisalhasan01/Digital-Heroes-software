@@ -63,8 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
     
     try {
+      // Dynamically target backend server if running local static host (like Live Server or file)
+      const host = window.location.hostname;
+      const port = window.location.port;
+      const apiBase = (host === 'localhost' || host === '127.0.0.1') && port !== '3000'
+        ? 'http://localhost:3000'
+        : '';
+
       // Call backend API endpoint
-      const response = await fetch('/api/audit', {
+      const response = await fetch(`${apiBase}/api/audit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

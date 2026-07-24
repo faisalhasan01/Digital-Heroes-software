@@ -39,15 +39,10 @@ describe('Parser Module Unit Tests', () => {
       expect(result.metaDescription).toBe('This is a test description for the SEO auditor tool.');
       expect(result.h1Count).toBe(1);
       
-      // Total images = 3, missing alt = 2 (/assets/logo.png and /assets/banner.png)
       expect(result.images.total).toBe(3);
       expect(result.images.missingAlt).toBe(2);
       expect(result.images.missingAltSources).toContain('/assets/logo.png');
       expect(result.images.missingAltSources).toContain('/assets/banner.png');
-
-      // Word count should count text in <h1>, <p>, and body. It should ignore script and style tags.
-      // Body readable text: "Main Title of the Page Hello world! This is a simple HTML paragraph used to calculate the approximate word count of the website. More text content to verify the split calculation."
-      // Let's check if the word count is reasonable (> 20 words)
       expect(result.wordCount).toBeGreaterThan(20);
     });
 
@@ -56,10 +51,8 @@ describe('Parser Module Unit Tests', () => {
         <!DOCTYPE html>
         <html>
           <head>
-            <!-- Missing title and meta description -->
           </head>
           <body>
-            <!-- Missing h1 and images -->
             <p>Just some plain text content without SEO elements.</p>
           </body>
         </html>
@@ -74,7 +67,7 @@ describe('Parser Module Unit Tests', () => {
       expect(result.images.total).toBe(0);
       expect(result.images.missingAlt).toBe(0);
       expect(result.images.missingAltSources).toEqual([]);
-      expect(result.wordCount).toBe(8); // "Just some plain text content without SEO elements." -> 8 words
+      expect(result.wordCount).toBe(8);
     });
 
     test('Failure Case 2: Handles null, empty string, or non-HTML text input gracefully', () => {

@@ -34,7 +34,6 @@ function parseHtml(html, responseTimeMs, statusCode) {
 
   // 2. Extract Meta Description
   let metaDescription = '';
-  // Try standard description meta tag (case-insensitive check handled by cheerio attribute selector)
   const metaDescTag = $('meta[name="description"]').first().attr('content') || 
                        $('meta[name="Description"]').first().attr('content') ||
                        $('meta[property="og:description"]').first().attr('content');
@@ -55,10 +54,8 @@ function parseHtml(html, responseTimeMs, statusCode) {
     const alt = $(element).attr('alt');
     const src = $(element).attr('src') || 'Unknown source';
     
-    // Check if alt attribute is missing entirely or empty/whitespace
     if (alt === undefined || alt === null || alt.trim() === '') {
       missingAltCount++;
-      // Limit sources to keep the payload clean
       if (missingAltSources.length < 10) {
         missingAltSources.push(src);
       }
@@ -66,14 +63,12 @@ function parseHtml(html, responseTimeMs, statusCode) {
   });
 
   // 5. Approximate word count of body text
-  // Clone body (or clean inline elements in-place on the loaded instance)
-  // We remove non-readable elements to get a better word count representation
   const cleanBody = cheerio.load(html);
   cleanBody('script, style, noscript, svg, iframe, path, head, link, meta, select, option, button').remove();
   
   const bodyText = cleanBody('body').text() || cleanBody.text();
   const cleanText = bodyText
-    .replace(/\s+/g, ' ')  // Collapse whitespace
+    .replace(/\s+/g, ' ')
     .trim();
   
   const wordCount = cleanText ? cleanText.split(/\s+/).filter(word => word.length > 0).length : 0;
@@ -102,7 +97,6 @@ function parseHtml(html, responseTimeMs, statusCode) {
  * @returns {Promise<object>} JSON report.
  */
 async function auditUrl(targetUrl, timeoutMs = 8000) {
-  // Validate URL format first
   try {
     new URL(targetUrl);
   } catch (err) {
@@ -118,14 +112,12 @@ async function auditUrl(targetUrl, timeoutMs = 8000) {
         'User-Agent': 'PagePulseAuditor/1.0',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
       },
-      // Prevent throwing error on non-2xx statuses so we can report them (e.g. 404, 500)
       validateStatus: () => true
     });
 
     const responseTimeMs = Date.now() - startTime;
     const contentType = response.headers['content-type'] || '';
 
-    // Check if the response is actually HTML.
     if (!contentType.includes('text/html') && !contentType.includes('application/xhtml+xml')) {
       throw new Error(`The requested URL did not return an HTML document. (Received content type: ${contentType})`);
     }
@@ -136,7 +128,6 @@ async function auditUrl(targetUrl, timeoutMs = 8000) {
   } catch (error) {
     const responseTimeMs = Date.now() - startTime;
 
-    // Handle Axios-specific HTTP/Network errors
     if (error.code === 'ECONNABORTED') {
       throw new Error(`Request timed out after ${timeoutMs}ms.`);
     }
@@ -144,7 +135,6 @@ async function auditUrl(targetUrl, timeoutMs = 8000) {
       throw new Error(`Host not found. Please check if the domain exists and you are connected to the internet.`);
     }
 
-    // Re-throw generic errors or compile message
     throw new Error(error.message || 'An error occurred while fetching the webpage.');
   }
 }
