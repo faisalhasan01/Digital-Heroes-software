@@ -63,12 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
     
     try {
-      // Dynamically target backend server if running local static host (like Live Server or file)
       const host = window.location.hostname;
-      const port = window.location.port;
-      const apiBase = (host === 'localhost' || host === '127.0.0.1') && port !== '3000'
-        ? 'http://localhost:3000'
-        : '__RENDER_BACKEND_URL__';
+      let apiBase = '';
+      
+      if (host === 'localhost' || host === '127.0.0.1') {
+        apiBase = 'http://localhost:3000';
+      } else {
+        apiBase = '__RENDER_BACKEND_URL__';
+        // Fallback to relative URL if the placeholder was not replaced during build
+        if (apiBase.startsWith('__') || !apiBase) {
+          apiBase = '';
+        }
+      }
 
       // Call backend API endpoint
       const response = await fetch(`${apiBase}/api/audit`, {
