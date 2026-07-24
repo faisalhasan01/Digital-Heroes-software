@@ -79,9 +79,27 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ url: targetUrl })
       });
 
+      // Handle HTTP error statuses gracefully
+      if (!response.ok) {
+        let errorMsg = 'Failed to complete audit request.';
+        try {
+          const errData = await response.json();
+          errorMsg = errData.error || errorMsg;
+        } catch (e) {
+          errorMsg = `Server returned error (${response.status}): ${response.statusText || 'Not Found'}`;
+        }
+        throw new Error(errorMsg);
+      }
+
+      // Check if response is JSON to prevent parse crashes
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(`Invalid server response. Expected JSON but received Content-Type: ${contentType || 'text/html'}. Ensure your backend server is running and accessible.`);
+      }
+
       const data = await response.json();
 
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         throw new Error(data.error || 'Failed to complete audit request.');
       }
 
