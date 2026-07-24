@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Pulse - Instant SEO & Web Page Auditor</title>
+  <meta name="description" content="Audit any webpage instantly for SEO titles, meta descriptions, word counts, and missing image alt tags. Built with speed and elegance.">
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for visual flair -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars-bg"></div>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <i class="fa-solid fa-heart-pulse logo-icon"></i>
+        <span>Page Pulse</span>
+      </div>
+      <h1>Optimize Your Page in a <span class="gradient-text">Heartbeat</span></h1>
+      <p class="tagline">Instantly scan any web page for critical SEO indicators, response time metrics, and structural assets.</p>
+    </header>
+
+    <!-- Search/Input Panel -->
+    <main class="audit-section">
+      <div class="glass-card audit-form-card">
+        <form id="audit-form">
+          <div class="input-wrapper">
+            <i class="fa-solid fa-link input-icon"></i>
+            <input 
+              type="url" 
+              id="url-input" 
+              placeholder="https://example.com" 
+              required 
+              autocomplete="off"
+            >
+            <button type="submit" id="submit-btn">
+              <span>Run Audit</span>
+              <i class="fa-solid fa-arrow-right btn-icon"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Loading / Scanning State -->
+      <div id="loader-state" class="loader-container hidden">
+        <div class="pulse-radar">
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <i class="fa-solid fa-heart-pulse radar-heart"></i>
+        </div>
+        <p class="loader-text">Pulsing the target URL... Measuring response time...</p>
+        <span id="loading-url" class="loading-url-display"></span>
+      </div>
+
+      <!-- Error Alert Card -->
+      <div id="error-card" class="glass-card error-card hidden">
+        <div class="error-header">
+          <i class="fa-solid fa-circle-exclamation error-icon"></i>
+          <h3>Audit Unsuccessful</h3>
+        </div>
+        <p id="error-message" class="error-message-text">We couldn't reach the server. Make sure the URL is correct and public.</p>
+        <div class="error-tips">
+          <h4>Suggested Checklist:</h4>
+          <ul>
+            <li>Ensure the URL contains <code>http://</code> or <code>https://</code>.</li>
+            <li>Double check the domain registration and DNS records.</li>
+            <li>Verify the site is public and not behind a login or firewall.</li>
+            <li>Confirm the target server responses in a reasonable timeframe.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div id="results-panel" class="results-container hidden">
+        <!-- Overview Banner -->
+        <div class="glass-card overview-card">
+          <div class="overview-grid">
+            <div class="overview-url">
+              <span class="label">Audited URL</span>
+              <h2 id="result-url" class="truncate-text">https://example.com</h2>
+            </div>
+            
+            <div class="overview-stat">
+              <span class="label">Status</span>
+              <div class="status-badge" id="status-badge">
+                <i class="fa-solid fa-circle-check"></i>
+                <span id="status-text">200 OK</span>
+              </div>
+            </div>
+
+            <div class="overview-stat">
+              <span class="label">Response Time</span>
+              <div class="time-metric">
+                <i class="fa-solid fa-stopwatch"></i>
+                <span id="response-time-text">145 ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          
+          <!-- Card 1: Page Title -->
+          <div class="glass-card metric-card" id="card-title">
+            <div class="card-header">
+              <div class="card-title-left">
+                <i class="fa-solid fa-heading icon-title"></i>
+                <h3>Page Title</h3>
+              </div>
+              <span class="badge" id="title-badge">Healthy</span>
+            </div>
+            <div class="card-content">
+              <p class="value-text" id="meta-title-val">Example Domain</p>
+              <div class="metric-meta">
+                <span id="title-length-text">Length: 14 characters</span>
+                <span class="recommendation" id="title-rec">Optimal length is 30–60 characters.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Meta Description -->
+          <div class="glass-card metric-card" id="card-desc">
+            <div class="card-header">
+              <div class="card-title-left">
+                <i class="fa-solid fa-paragraph icon-desc"></i>
+                <h3>Meta Description</h3>
+              </div>
+              <span class="badge" id="desc-badge">Warning</span>
+            </div>
+            <div class="card-content">
+              <p class="value-text italic-placeholder" id="meta-desc-val">No description tag found in HTML head.</p>
+              <div class="metric-meta">
+                <span id="desc-length-text">Length: 0 characters</span>
+                <span class="recommendation" id="desc-rec">Optimal length is 110–160 characters.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: H1 Headers Count -->
+          <div class="glass-card metric-card" id="card-h1">
+            <div class="card-header">
+              <div class="card-title-left">
+                <i class="fa-solid fa-header icon-h1"></i>
+                <h3>H1 Count</h3>
+              </div>
+              <span class="badge" id="h1-badge">Healthy</span>
+            </div>
+            <div class="card-content">
+              <div class="metric-huge">
+                <span id="h1-count-val">1</span>
+                <span class="sub-label">H1 Tag(s)</span>
+              </div>
+              <div class="metric-meta">
+                <span class="recommendation" id="h1-rec">Exactly one H1 element is recommended for proper layout structure.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Word Count -->
+          <div class="glass-card metric-card" id="card-words">
+            <div class="card-header">
+              <div class="card-title-left">
+                <i class="fa-solid fa-file-lines icon-words"></i>
+                <h3>Approx. Word Count</h3>
+              </div>
+              <span class="badge" id="words-badge">Healthy</span>
+            </div>
+            <div class="card-content">
+              <div class="metric-huge">
+                <span id="word-count-val">342</span>
+                <span class="sub-label">Words</span>
+              </div>
+              <div class="metric-meta">
+                <span class="recommendation" id="words-rec">Aim for at least 300 words of content for search engine indexation.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Image ALT Attributes -->
+          <div class="glass-card metric-card span-two-cols" id="card-images">
+            <div class="card-header">
+              <div class="card-title-left">
+                <i class="fa-solid fa-image icon-images"></i>
+                <h3>Image Alt Tag Audit</h3>
+              </div>
+              <span class="badge" id="images-badge">Action Required</span>
+            </div>
+            <div class="card-content images-content-split">
+              <div class="images-summary">
+                <div class="summary-stat-row">
+                  <span class="stat-label">Total Images Scanned:</span>
+                  <strong id="img-total-val">12</strong>
+                </div>
+                <div class="summary-stat-row">
+                  <span class="stat-label">Missing Alt Attributes:</span>
+                  <strong id="img-missing-val" class="highlight-danger">4</strong>
+                </div>
+                <p class="recommendation">Images without alternative text reduce website accessibility (WCAG compliance) and degrade image search performance.</p>
+              </div>
+              
+              <div class="images-missing-list-wrapper">
+                <h4>Sources Missing Alt Texts:</h4>
+                <ul class="missing-sources-list" id="missing-sources-list">
+                  <li>/assets/logo.png</li>
+                  <li>/images/banner-wide.jpg</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>&copy; 2026 Page Pulse. All rights reserved.</p>
+      <p class="credit">
+        Built for Digital Heroes Training Task &bull; 
+        <a href="https://digitalheroesco.com" target="_blank" rel="noopener noreferrer">digitalheroesco.com</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

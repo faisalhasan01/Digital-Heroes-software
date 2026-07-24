@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# System/IDE temp files
+.system_generated/
+.agents/
+scratch/
+task.md
+implementation_plan.md
+walkthrough.md
+*.png
+*.webp
+*.log
